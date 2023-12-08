@@ -46,56 +46,67 @@ const prioritizedTasks = computed(() => {
 </script>
 
 <template>
-  <div class="overview-container">
-    <Card>
-      <template #title>Top 5s</template>
+  <div class="container">
+    <div class="overview-container">
+      <h1>Profiling Session Overview</h1>
 
-      <template #content>
-        <div class="highlights-container">
-          <highlight-summary
-            title="Longest total runtime on UI thread"
-            :tasks="topLongestRunningTasks"
-          />
+      <Card>
+        <template #title>Top 5s</template>
 
-          <highlight-summary
-            title="Longest wait time in dispatcher queue"
-            :tasks="topLongestWaitingTasks"
-          />
-        </div>
-      </template>
-    </Card>
+        <template #content>
+          <div class="highlights-container">
+            <highlight-summary
+              title="Longest total runtime on UI thread"
+              :tasks="topLongestRunningTasks"
+            />
 
-    <Card>
-      <template #title>Highlights</template>
+            <highlight-summary
+              title="Longest total wait time in dispatcher queue"
+              :tasks="topLongestWaitingTasks"
+            />
+          </div>
+        </template>
+      </Card>
 
-      <template #content>
-        <div class="conclusion-summaries-container">
-          <conclusion-based-summary
-            title="Redundant dispatching"
-            description="Tasks that were dispatched from the UI thread, in which case dispatching is probably redundant and the task can run directly in the same context."
-            :tasks="redundantTasks"
-            :comment="`${redundantTasksTotalQueueTime}ms wasted waiting in queue`"
-          />
+      <Card>
+        <template #title>Highlights</template>
 
-          <conclusion-based-summary
-            title="Prioritized tasks"
-            description="Tasks that were given higher priority (excludes tasks that only ran for <2ms). Priority should be set carefully."
-            :tasks="prioritizedTasks"
-            comment=""
-            show-average-priority
-            show-group-size
-          />
-        </div>
-      </template>
-    </Card>
+        <template #content>
+          <div class="conclusion-summaries-container">
+            <conclusion-based-summary
+              title="Redundant dispatching"
+              description="Tasks that were dispatched from the UI thread, in which case dispatching is probably redundant and the task can run directly in the same context."
+              :tasks="redundantTasks"
+              :comment="`${redundantTasksTotalQueueTime}ms wasted waiting in queue`"
+            />
+
+            <conclusion-based-summary
+              title="Prioritized tasks"
+              description="Tasks that were given higher priority (excludes tasks that only ran for <2ms). Priority should be set carefully."
+              :tasks="prioritizedTasks"
+              comment=""
+              show-average-priority
+              show-group-size
+            />
+          </div>
+        </template>
+      </Card>
+    </div>
   </div>
 </template>
 
 <style scoped>
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .overview-container {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  max-width: 1400px;
 }
 
 .highlights-container {

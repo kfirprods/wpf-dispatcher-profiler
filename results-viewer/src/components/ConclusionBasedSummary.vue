@@ -52,7 +52,7 @@ defineProps({
             </router-link>
           </template>
         </Column>
-        <Column field="accumulated_total_run_time" header="Total Run Time">
+        <Column field="accumulated_total_run_time" header="Total Time">
           <template #body="slotProps"> {{ slotProps.data.accumulated_total_run_time }}ms </template>
         </Column>
         <Column field="accumulated_time_in_queue" header="Wait Time">
