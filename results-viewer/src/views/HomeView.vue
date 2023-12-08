@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useProfilerStore } from '@/stores/profiler';
+import { useProfilerStore } from '@/stores/profiler.store';
 import { useRouter } from 'vue-router';
 
 const file = ref<File | null>(null);
@@ -45,3 +45,4 @@ const onFileChange = (e: Event) => {
   height: 100%;
 }
 </style>
+@/stores/profiler.store

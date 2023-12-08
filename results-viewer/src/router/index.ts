@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
 import ResultsOverviewView from '../views/ResultsOverviewView.vue';
-import { useProfilerStore } from '@/stores/profiler';
+import TaskGroupView from '../views/TaskGroupView.vue';
+import { useProfilerStore } from '@/stores/profiler.store';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -18,6 +19,23 @@ const router = createRouter({
       beforeEnter: (to, from, next) => {
         const { profilingSession } = useProfilerStore();
         if (!profilingSession) {
+          next('/');
+        } else {
+          next();
+        }
+      }
+    },
+    {
+      path: '/task-group',
+      name: 'task-group',
+      component: TaskGroupView,
+      // required query param "origin_name"
+      props: (route) => ({ originName: route.query.origin_name as string }),
+      beforeEnter: (to, from, next) => {
+        const { profilingSession } = useProfilerStore();
+        if (!to.query.origin_name) {
+          next('/overview');
+        } else if (!profilingSession) {
           next('/');
         } else {
           next();
