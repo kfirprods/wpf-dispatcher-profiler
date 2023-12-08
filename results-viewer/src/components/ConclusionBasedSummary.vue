@@ -3,6 +3,8 @@ import { type PropType } from 'vue';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import { type GroupedTasks } from '@/types';
+import { convertDispatcherPriorityToText } from '@/utils';
+import AnimatedNumber from '@/components/AnimatedNumber.vue';
 
 defineProps({
   title: {
@@ -53,21 +55,29 @@ defineProps({
           </template>
         </Column>
         <Column field="accumulated_total_run_time" header="Total Time">
-          <template #body="slotProps"> {{ slotProps.data.accumulated_total_run_time }}ms </template>
+          <template #body="slotProps">
+            <animated-number suffix="ms" :number="slotProps.data.accumulated_total_run_time" />
+          </template>
         </Column>
         <Column field="accumulated_time_in_queue" header="Wait Time">
-          <template #body="slotProps"> {{ slotProps.data.accumulated_time_in_queue }}ms </template>
+          <template #body="slotProps">
+            <animated-number suffix="ms" :number="slotProps.data.accumulated_time_in_queue" />
+          </template>
         </Column>
         <Column field="accumulated_actual_run_time" header="Run Time">
           <template #body="slotProps">
-            {{ slotProps.data.accumulated_actual_run_time }}ms
+            <animated-number suffix="ms" :number="slotProps.data.accumulated_actual_run_time" />
           </template>
         </Column>
         <Column v-if="showAveragePriority" field="average_priority" header="Avg. Priority">
-          <template #body="slotProps"> {{ slotProps.data.average_priority }} </template>
+          <template #body="slotProps">
+            {{ convertDispatcherPriorityToText(slotProps.data.average_priority) }}
+          </template>
         </Column>
         <Column v-if="showGroupSize" header="Count">
-          <template #body="slotProps"> {{ slotProps.data.tasks.length }} </template>
+          <template #body="slotProps">
+            <animated-number :number="slotProps.data.tasks.length" />
+          </template>
         </Column>
       </DataTable>
     </div>

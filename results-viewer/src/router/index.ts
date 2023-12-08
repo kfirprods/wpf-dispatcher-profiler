@@ -32,8 +32,10 @@ const router = createRouter({
       // required query param "origin_name"
       props: (route) => ({ originName: route.query.origin_name as string }),
       beforeEnter: (to, from, next) => {
-        const { profilingSession } = useProfilerStore();
-        if (!to.query.origin_name) {
+        const { profilingSession, groupedTasks } = useProfilerStore();
+        const group = groupedTasks.find((g) => g.origin_name === to.query.origin_name);
+
+        if (!to.query.origin_name || !group) {
           next('/overview');
         } else if (!profilingSession) {
           next('/');

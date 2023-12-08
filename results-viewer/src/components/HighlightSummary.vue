@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { PropType } from 'vue';
 import { RouterLink } from 'vue-router';
+import AnimatedNumber from './AnimatedNumber.vue';
 
 interface TaskSummary {
   origin_name: string;
@@ -24,7 +25,9 @@ defineProps({
     <h3 class="highlight-title">{{ title }}</h3>
     <div class="highlight-list-container">
       <template v-for="(task, index) in tasks" :key="index">
-        <div class="time">{{ task.time }}ms</div>
+        <div class="time">
+          <animated-number suffix="ms" :number="task.time" />
+        </div>
         <div class="name">
           <router-link :to="{ name: 'task-group', query: { origin_name: task.origin_name } }">
             {{ task.origin_name }}

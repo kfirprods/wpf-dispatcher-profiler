@@ -2,14 +2,13 @@
 import { ref } from 'vue';
 import { useProfilerStore } from '@/stores/profiler.store';
 import { useRouter } from 'vue-router';
+import FileDragZone from '@/components/FileDragZone.vue';
 
 const file = ref<File | null>(null);
 const profilerStore = useProfilerStore();
 const router = useRouter();
 
-const onFileChange = (e: Event) => {
-  const target = e.target as HTMLInputElement;
-  const files = target.files as FileList;
+const onFilesSelected = (files: File[]) => {
   file.value = files[0];
 
   // read file contents as JSON
@@ -30,8 +29,14 @@ const onFileChange = (e: Event) => {
 <template>
   <main>
     <div class="drag-zone">
-      <label>Drag a JSON file here</label>
-      <input type="file" @change="onFileChange" multiple="false" accept=".json" />
+      <h1>WPF Dispatcher Profiler</h1>
+
+      <file-drag-zone
+        upload-text="Drag and drop a JSON file here, or click to select a file"
+        :multiple="false"
+        accept="application/json"
+        @select="onFilesSelected"
+      />
     </div>
   </main>
 </template>
@@ -45,4 +50,3 @@ const onFileChange = (e: Event) => {
   height: 100%;
 }
 </style>
-@/stores/profiler.store

@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import Card from 'primevue/card';
-import HighlightSummary from '@/components/HighlightSummary.vue';
-
-import { useProfilerStore } from '@/stores/profiler.store';
 import { computed } from 'vue';
+import HighlightSummary from '@/components/HighlightSummary.vue';
+import { useProfilerStore } from '@/stores/profiler.store';
 import ConclusionBasedSummary from '@/components/ConclusionBasedSummary.vue';
+import { convertMillisecondsToText, convertIso8601ToTimeAgo } from '@/utils';
+import AnimatedNumber from '@/components/AnimatedNumber.vue';
 
-const { groupedTasks, longestRunningTasks, longestWaitingTasks } = useProfilerStore();
+const { profilingSession, groupedTasks, longestRunningTasks, longestWaitingTasks } =
+  useProfilerStore();
 
 const DEFAULT_PRIORITY = 2;
 
@@ -49,6 +51,11 @@ const prioritizedTasks = computed(() => {
   <div class="container">
     <div class="overview-container">
       <h1>Profiling Session Overview</h1>
+      <h5>
+        <animated-number :number="profilingSession!.tasks.length" /> tasks recorded over
+        {{ convertMillisecondsToText(profilingSession!.total_run_time) }}
+        • Exported {{ convertIso8601ToTimeAgo(profilingSession!.exported_at) }}
+      </h5>
 
       <Card>
         <template #title>Top 5s</template>
@@ -109,6 +116,12 @@ const prioritizedTasks = computed(() => {
   max-width: 1400px;
 }
 
+h1,
+h5 {
+  margin: 0;
+  padding: 0;
+}
+
 .highlights-container {
   display: flex;
   justify-content: space-between;
@@ -128,4 +141,3 @@ const prioritizedTasks = computed(() => {
   border-bottom: 1px solid #e0e0e0;
 }
 </style>
-@/stores/profiler.store

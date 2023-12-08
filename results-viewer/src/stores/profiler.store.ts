@@ -46,8 +46,9 @@ export const useProfilerStore = defineStore('profiler', () => {
           existingTask.accumulated_time_in_queue / existingTask.tasks.length;
         existingTask.average_total_run_time =
           existingTask.accumulated_total_run_time / existingTask.tasks.length;
-        existingTask.average_priority =
-          existingTask.tasks.reduce((acc, t) => acc + t.priority, 0) / existingTask.tasks.length;
+        existingTask.average_priority = Math.round(
+          existingTask.tasks.reduce((acc, t) => acc + t.priority, 0) / existingTask.tasks.length
+        );
 
         if (task.is_probably_redundant) {
           existingTask.has_redundant_tasks = true;
