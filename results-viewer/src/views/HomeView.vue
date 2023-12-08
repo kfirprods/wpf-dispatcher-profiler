@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { type ProfilingSession } from '@/types';
+import { useProfilerStore } from '@/stores/profiler';
+import { useRouter } from 'vue-router';
 
 const file = ref<File | null>(null);
-const profilingSession = ref<ProfilingSession | null>(null);
+const profilerStore = useProfilerStore();
+const router = useRouter();
 
 const onFileChange = (e: Event) => {
   const target = e.target as HTMLInputElement;
@@ -15,7 +17,11 @@ const onFileChange = (e: Event) => {
   reader.onload = (e) => {
     const contents = e.target?.result as string;
 
-    profilingSession.value = JSON.parse(contents);
+    const profilingSession = JSON.parse(contents);
+    profilerStore.setProfilingSession(profilingSession);
+
+    // redirect to results overview
+    router.push('/overview');
   };
   reader.readAsText(files[0]);
 };
@@ -23,13 +29,19 @@ const onFileChange = (e: Event) => {
 
 <template>
   <main>
-    <div v-if="!profilingSession">
+    <div class="drag-zone">
       <label>Drag a JSON file here</label>
       <input type="file" @change="onFileChange" multiple="false" accept=".json" />
     </div>
-    <div v-else>
-      <h1>{{ profilingSession.total_run_time }}</h1>
-      <p>{{ profilingSession.exported_at }}</p>
-    </div>
   </main>
 </template>
+
+<style scoped>
+.drag-zone {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+</style>

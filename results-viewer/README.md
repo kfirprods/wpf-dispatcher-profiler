@@ -1,46 +1,36 @@
 # results-viewer
 
-This template should help get you started developing with Vue 3 in Vite.
+## Overview
 
-## Recommended IDE Setup
+The goal of this project is to create a user-friendly UI that summarizes and draws conclusions from custom profiling sessions of tasks that ran on a WPF dispatcher. The profiling data is provided in a JSON format.
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+## Input Data Structure
 
-## Type Support for `.vue` Imports in TS
+The JSON file contains the following fields:
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
+- exported_at: The date and time when the profiling data was exported.
+- total_run_time: The total run time of the profiling session.
+- tasks: An array of tasks, each with the following fields:
+- time_in_queue: The time the task spent in the queue.
+- actual_run_time: The actual run time of the task.
+- is_probably_redundant: A boolean indicating whether the task is likely redundant.
+- priority: The priority of the task.
+- origin_name: The name of the function that originated the task.
+- created_at: The date and time when the task was created.
 
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
+## Product specifications
 
-1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
+### User flow
 
-## Customize configuration
+- User drags/selects JSON input file
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+- Summary View: Display a summary of the profiling session. Inspired by dotMemory's UX, this view should display some conclusions based on the data to help users identify performance issues. We could highlight actual run time and waiting time 1st, then present conclusions related to redundancy/priority. We might also want to show a timeline of tasks to help visualize queue congestion (but it has a high cost of development and fairly low value)
 
-## Project Setup
+- Task List: The summary view should have at least 1 point of interaction that leads to a table that displays all tasks (grouped by the name identifier). Again, inspired by dotMemory, a click on the row shall take the user to a table that displays only the tasks from that same group (this time not grouping them)
 
-```sh
-npm install
-```
+### Conclusions that can be drawn from the data
 
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+- Tasks that occupied a long time on the UI thread
+- Tasks that waited a long time in the queue
+- Something about priorities...
+- Potential redundancies (tasks dispatched from UI thread)
