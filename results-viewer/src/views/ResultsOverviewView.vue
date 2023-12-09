@@ -19,11 +19,23 @@ const topLongestRunningTasks = computed(() => {
   }));
 });
 
+const timeOccupiedByNonLongRunningTasks = computed(() => {
+  return longestRunningTasks
+    .slice(5)
+    .reduce((acc, taskGroup) => acc + taskGroup.accumulated_actual_run_time, 0);
+});
+
 const topLongestWaitingTasks = computed(() => {
   return longestWaitingTasks.slice(0, 5).map((taskGroup) => ({
     origin_name: taskGroup.origin_name,
     time: taskGroup.accumulated_time_in_queue
   }));
+});
+
+const timeOccupiedByNonLongWaitingTasks = computed(() => {
+  return longestWaitingTasks
+    .slice(5)
+    .reduce((acc, taskGroup) => acc + taskGroup.accumulated_time_in_queue, 0);
 });
 
 const redundantTasks = computed(() => {
@@ -71,11 +83,13 @@ const previewGroupedTasks = computed(() => {
             <highlight-summary
               title="Longest total runtime on UI thread"
               :tasks="topLongestRunningTasks"
+              :time-occupied-by-other-tasks="timeOccupiedByNonLongRunningTasks"
             />
 
             <highlight-summary
               title="Longest total wait time in dispatcher queue"
               :tasks="topLongestWaitingTasks"
+              :time-occupied-by-other-tasks="timeOccupiedByNonLongWaitingTasks"
             />
           </div>
         </template>
@@ -156,6 +170,11 @@ h5 {
 .highlights-container {
   display: flex;
   justify-content: space-between;
+}
+
+.highlights-container > * {
+  flex-grow: 1;
+  flex-shrink: 0;
 }
 
 .conclusion-summaries-container {
