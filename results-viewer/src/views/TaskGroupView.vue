@@ -59,10 +59,17 @@ const fromRouteDisplayName = computed(() => {
       >
 
       <Card>
-        <template #title>{{ groupedTask!.origin_name }} tasks</template>
+        <template #title
+          >{{ groupedTask!.origin_name }} tasks ({{ groupedTask!.tasks.length }})</template
+        >
 
         <template #content>
-          <DataTable :value="displayedTasks">
+          <DataTable
+            :value="displayedTasks"
+            paginator
+            :rows="50"
+            :rowsPerPageOptions="[50, 100, 250]"
+          >
             <Column field="order" header="Order" sortable></Column>
             <Column field="total_run_time" header="Total Time" sortable>
               <template #body="slotProps"> {{ slotProps.data.total_run_time }}ms </template>

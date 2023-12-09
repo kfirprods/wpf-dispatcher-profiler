@@ -5,7 +5,7 @@ import random
 from datetime import datetime, timedelta
 
 # Define the number of tasks and origin names
-num_tasks = 100000
+num_tasks = 1000000
 num_origin_names = 70
 
 # Generate a list of origin names
