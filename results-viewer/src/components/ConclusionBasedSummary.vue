@@ -1,19 +1,17 @@
 <script setup lang="ts">
 import { type PropType } from 'vue';
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
 import { type GroupedTasks } from '@/types';
-import { convertDispatcherPriorityToText } from '@/utils';
-import AnimatedNumber from '@/components/AnimatedNumber.vue';
+
+import GroupedTasksDataTable from './GroupedTasksDataTable.vue';
 
 defineProps({
   title: {
     type: String,
-    required: true
+    required: false
   },
   description: {
     type: String,
-    required: true
+    required: false
   },
   comment: {
     type: String,
@@ -36,7 +34,7 @@ defineProps({
 
 <template>
   <div class="container">
-    <div class="text-container">
+    <div v-if="title && description" class="text-container">
       <h3>{{ title }}</h3>
       <p>{{ description }}</p>
     </div>
@@ -44,42 +42,11 @@ defineProps({
     <div class="table-container">
       <h3 class="comment">{{ tasks.length ? comment : 'No issues found' }}</h3>
 
-      <DataTable v-if="tasks.length" :value="tasks">
-        <Column field="origin_name" header="Name">
-          <template #body="slotProps">
-            <router-link
-              :to="{ name: 'task-group', query: { origin_name: slotProps.data.origin_name } }"
-            >
-              {{ slotProps.data.origin_name }}
-            </router-link>
-          </template>
-        </Column>
-        <Column field="accumulated_total_run_time" header="Total Time">
-          <template #body="slotProps">
-            <animated-number suffix="ms" :number="slotProps.data.accumulated_total_run_time" />
-          </template>
-        </Column>
-        <Column field="accumulated_time_in_queue" header="Wait Time">
-          <template #body="slotProps">
-            <animated-number suffix="ms" :number="slotProps.data.accumulated_time_in_queue" />
-          </template>
-        </Column>
-        <Column field="accumulated_actual_run_time" header="Run Time">
-          <template #body="slotProps">
-            <animated-number suffix="ms" :number="slotProps.data.accumulated_actual_run_time" />
-          </template>
-        </Column>
-        <Column v-if="showAveragePriority" field="average_priority" header="Avg. Priority">
-          <template #body="slotProps">
-            {{ convertDispatcherPriorityToText(slotProps.data.average_priority) }}
-          </template>
-        </Column>
-        <Column v-if="showGroupSize" header="Count">
-          <template #body="slotProps">
-            <animated-number :number="slotProps.data.tasks.length" />
-          </template>
-        </Column>
-      </DataTable>
+      <grouped-tasks-data-table
+        :tasks="tasks"
+        :show-average-priority="showAveragePriority"
+        :show-group-size="showGroupSize"
+      />
     </div>
   </div>
 </template>
@@ -97,6 +64,7 @@ defineProps({
 
 .table-container {
   flex: 1;
+  overflow-x: auto;
 }
 
 h3 {

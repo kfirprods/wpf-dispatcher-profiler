@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Card from 'primevue/card';
-import { computed } from 'vue';
-import { useRoute } from 'vue-router';
+import { computed, onBeforeMount, ref } from 'vue';
+import { useRoute, type RouteLocationNormalized } from 'vue-router';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 
@@ -10,8 +10,8 @@ import type { ProfiledTask } from '@/types';
 import { convertBooleanToText, convertDispatcherPriorityToText } from '@/utils';
 
 const route = useRoute();
-
 const profilerStore = useProfilerStore();
+let fromRoute = ref<RouteLocationNormalized | null>(null);
 
 const groupedTask = computed(() =>
   profilerStore.groupedTasks.find((group) => group.origin_name === route.query.origin_name)
@@ -25,6 +25,10 @@ function iso8601ToSeconds(iso8601Timestamp: string) {
   return new Date(iso8601Timestamp).getTime();
 }
 
+onBeforeMount(() => {
+  fromRoute.value = route.meta.from as RouteLocationNormalized;
+});
+
 const displayedTasks = computed(() => {
   if (!groupedTask.value) {
     return [];
@@ -37,12 +41,22 @@ const displayedTasks = computed(() => {
       order: index + 1
     }));
 });
+
+const fromRouteDisplayName = computed(() => {
+  if (!fromRoute.value) {
+    return '';
+  }
+
+  return fromRoute.value.name?.toString().replace(/-/g, ' ');
+});
 </script>
 
 <template>
   <div class="container">
     <div class="overview-container">
-      <router-link to="/overview" class="back-link">← Back to overview</router-link>
+      <router-link v-if="fromRoute" :to="fromRoute.path" class="navigation-link"
+        >← Back to {{ fromRouteDisplayName }}</router-link
+      >
 
       <Card>
         <template #title>{{ groupedTask!.origin_name }} tasks</template>
@@ -88,11 +102,5 @@ const displayedTasks = computed(() => {
   flex-direction: column;
   gap: 1rem;
   max-width: 1400px;
-}
-
-.back-link {
-  text-decoration: none;
-  font-size: 0.9rem;
-  align-self: flex-start;
 }
 </style>

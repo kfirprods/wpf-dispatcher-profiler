@@ -64,7 +64,7 @@ const onDrop = (event: DragEvent) => {
   background: white;
   color: #4b5563;
   border-radius: 6px;
-  border: 1px solid #e0e0e0;
+  border: 2px dashed #e0e0e0;
   padding: 1rem;
   cursor: pointer;
   user-select: none;

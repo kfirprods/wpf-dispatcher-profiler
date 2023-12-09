@@ -12,7 +12,14 @@ export const useProfilerStore = defineStore('profiler', () => {
     }));
 
     _profilingSession.value = session;
-    sessionStorage.setItem('profilingSession', JSON.stringify(session));
+
+    try {
+      sessionStorage.setItem('profilingSession', JSON.stringify(session));
+    } catch (error) {
+      console.warn(
+        "Unfortunatly, we couldn't save the profiling session to sessionStorage, probably due to it exceeding the 5MB limit."
+      );
+    }
   }
 
   const profilingSession = computed(() => {

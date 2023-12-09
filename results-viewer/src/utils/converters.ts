@@ -35,6 +35,10 @@ export function convertIso8601ToTimeAgo(iso8601: string) {
 }
 
 export function convertDispatcherPriorityToText(priority: number) {
+  return `${convertDispatcherPriorityToName(priority)} (${priority})`;
+}
+
+function convertDispatcherPriorityToName(priority: number) {
   switch (priority) {
     case 0:
       return 'Inactive';

@@ -11,6 +11,10 @@
   animation-delay: 200ms;
 }
 
+.p-card:nth-of-type(3) {
+  animation-delay: 400ms;
+}
+
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -21,4 +25,11 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.navigation-link {
+  text-decoration: none;
+  font-size: 0.9rem;
+  align-self: flex-start;
+  padding: 0.5rem 0;
 }

@@ -43,7 +43,13 @@ const prioritizedTasks = computed(() => {
       (taskGroup) =>
         taskGroup.average_priority > DEFAULT_PRIORITY && taskGroup.average_actual_run_time > 2
     )
-    .slice(0, 10);
+    .slice(0, 5);
+});
+
+const previewGroupedTasks = computed(() => {
+  return [...groupedTasks]
+    .sort((a, b) => b.accumulated_total_run_time - a.accumulated_total_run_time)
+    .slice(0, 5);
 });
 </script>
 
@@ -52,7 +58,7 @@ const prioritizedTasks = computed(() => {
     <div class="overview-container">
       <h1>Profiling Session Overview</h1>
       <h5>
-        <animated-number :number="profilingSession!.tasks.length" /> tasks recorded over
+        <animated-number :number="profilingSession!.tasks.length" /> dispatched tasks recorded over
         {{ convertMillisecondsToText(profilingSession!.total_run_time) }}
         • Exported {{ convertIso8601ToTimeAgo(profilingSession!.exported_at) }}
       </h5>
@@ -98,6 +104,31 @@ const prioritizedTasks = computed(() => {
           </div>
         </template>
       </Card>
+
+      <Card>
+        <template #title>All Tasks (grouped by name)</template>
+
+        <template #content>
+          <div class="preview-all-container">
+            <conclusion-based-summary
+              :tasks="previewGroupedTasks"
+              :comment="`${groupedTasks.length} unique task names (${
+                profilingSession!.tasks.length
+              } total instances)`"
+              show-average-priority
+              show-group-size
+            />
+
+            <router-link
+              v-if="groupedTasks.length > 10"
+              class="navigation-link"
+              :to="{ name: 'all-task-groups' }"
+            >
+              View all {{ groupedTasks.length }} task groups →
+            </router-link>
+          </div>
+        </template>
+      </Card>
     </div>
   </div>
 </template>
@@ -137,7 +168,12 @@ h5 {
   padding: 1rem 0;
 }
 
-.conclusion-summaries-container > *:not(:last-child) {
+.conclusion-summaries-container > *:not(:last-of-type) {
   border-bottom: 1px solid #e0e0e0;
+}
+
+.preview-all-container {
+  display: flex;
+  flex-direction: column;
 }
 </style>
